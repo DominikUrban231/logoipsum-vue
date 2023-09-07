@@ -45,11 +45,10 @@ export default {
     },
     methods: {
         validateData() {
-            const namePattern = /^[A-Za-z]+$/;
-            const surnamePattern = /^[A-Za-z]+$/;
+            const Pattern = /^[A-Za-z]+$/;
 
-            const isNameValid = namePattern.test(this.name);
-            const isSurnameValid = surnamePattern.test(this.surname);
+            const isNameValid = Pattern.test(this.name);
+            const isSurnameValid = Pattern.test(this.surname);
 
                 if (!isNameValid || !isSurnameValid) {
                 this.inputError = "Dozwolone są tylko litery";
