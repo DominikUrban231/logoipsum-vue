@@ -3,15 +3,15 @@
         <form>
             <div>
                 <label>IMIĘ<span>*</span></label>
-                <input v-model="name" placeholder=" - wpisz -" type="text" name="name">
+                <input v-model="name" placeholder=" - wpisz -" type="text" name="name" @input="validateData">
             </div>
             <div>
                 <label>NAZWISKO<span>*</span></label>
-                <input v-model="surname" placeholder=" - wpisz -" type="text" name="name">
+                <input v-model="surname" placeholder=" - wpisz -" type="text" name="name" @input="validateData">
             </div>
             <div>
                 <label>E-MAIL<span>*</span></label>
-                <input v-model="email" placeholder=" - wpisz -" type="text" name="name">
+                <input v-model="email" placeholder=" - wpisz -" type="text" name="name" @input="validateEmail">
             </div>
             <p><span>*</span> - pola wymagane</p>
             <label class="checkbox-wrapper">
@@ -20,7 +20,8 @@
             </label>
             <button @click.prevent="formSubmit({name, surname, email, accept})" type="submit">Wyślij</button>
             <p class="error" v-if="showErrorMessage">Proszę uzupełnić wymagane pola</p>
-
+            <p class="error" v-if="inputError">{{inputError}}</p>
+            <p class="error" v-if="emailError">{{ emailError }}</p>
             <img @click="hideForm" src="./../assets/svg/close.svg" alt="">
         </form>
     </section>
@@ -28,18 +29,6 @@
 
 <script>
 export default {
-    methods: {
-        formSubmit(formObject) {
-            if (this.name && this.email && this.email && this.accept) {
-                console.log(formObject);
-            } else {
-                this.showErrorMessage = true;
-            }
-        },
-        hideForm() {
-            this.$emit('hide-form');        }
-        
-    },
     data() {
         return {
             name: '',
@@ -47,11 +36,48 @@ export default {
             email: '',
             accept: false,
             showErrorMessage: false,
+            inputError: "",
+            emailError: ""
         }
     },
     props: {
         isVisible: false,
-    }
+    },
+    methods: {
+        validateData() {
+            const namePattern = /^[A-Za-z]+$/;
+            const surnamePattern = /^[A-Za-z]+$/;
+
+            const isNameValid = namePattern.test(this.name);
+            const isSurnameValid = surnamePattern.test(this.surname);
+
+                if (!isNameValid || !isSurnameValid) {
+                this.inputError = "Dozwolone są tylko litery";
+            } else {
+                this.inputError = "";
+            }
+        },
+        validateEmail() {
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(this.email)) {
+                this.emailError = "Proszę wpisać poprawny adres e-mail";
+            } else {
+                this.emailError = "";
+            }
+        },
+        formSubmit(formObject) {
+            this.validateData();
+            this.validateEmail();
+            if (this.name && this.email && this.email && this.accept && !this.inputError && !this.emailError) {
+                console.log(formObject);
+            } else {
+                this.showErrorMessage = true;
+            }
+        },
+        hideForm() {
+            this.$emit('hide-form');        
+        },
+    },
 }
 </script>
 
@@ -125,3 +151,12 @@ export default {
     visibility: hidden;
 }
 </style>
+
+validateName() {
+            const pattern = /^[A-Za-z]+$/;
+            if (!pattern.test(this.name && this.surname)) {
+                this.nameError = "Dozwolone są tylko litery";
+            } else {
+                this.nameError = "";
+            }
+        },
